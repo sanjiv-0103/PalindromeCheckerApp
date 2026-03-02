@@ -2,31 +2,28 @@ import java.util.Scanner;
 public class PalindromeCheckerApp {
     public static void main(String[] args) {
 
-          Scanner scanner = new Scanner(System.in);
-          System.out.print("Enter a word to check if it is a palindrome: ");
-            String input = scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
 
-            boolean isPalindrome = check(input, 0, input.length() - 1);
+        System.out.print("Enter a phrase to check if it is a palindrome: ");
+        String input = scanner.nextLine();
 
-            if (isPalindrome) {
-                System.out.println("The string \"" + input + "\" is a palindrome.");
-            } else {
-                System.out.println("The string \"" + input + "\" is NOT a palindrome.");
+        String normalized = input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+        boolean isPalindrome = true;
+
+        for (int i = 0; i < normalized.length() / 2; i++) {
+            if (normalized.charAt(i) != normalized.charAt(normalized.length() - 1 - i)) {
+                isPalindrome = false;
+                break;
             }
-
-            scanner.close();
         }
 
-
-        private static boolean check(String s, int start, int end) {
-            if (start >= end) {
-                return true;
-            }
-
-            if (s.charAt(start) != s.charAt(end)) {
-                return false;
-            }
-
-            return check(s, start + 1, end - 1);
+        if (isPalindrome) {
+            System.out.println("The phrase \"" + input + "\" is a palindrome (ignoring spaces and case).");
+        } else {
+            System.out.println("The phrase \"" + input + "\" is NOT a palindrome.");
         }
+
+        scanner.close();
+    }
 }
