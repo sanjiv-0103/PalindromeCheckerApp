@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
 public class PalindromeCheckerApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -7,20 +9,23 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a word to check if it is a palindrome: ");
         String input = scanner.nextLine();
 
+        Queue<Character> queue = new LinkedList<>();
+
         Stack<Character> stack = new Stack<>();
 
         for (char c : input.toCharArray()) {
+            queue.add(c);
             stack.push(c);
         }
 
         boolean isPalindrome = true;
 
-        for (char c : input.toCharArray()) {
+        while (!queue.isEmpty()) {
 
-            // Pop character from stack
-            char popped = stack.pop();
+            char fromQueue = queue.remove();
+            char fromStack = stack.pop();
 
-            if (c != popped) {
+            if (fromQueue != fromStack) {
                 isPalindrome = false;
                 break;
             }
@@ -33,6 +38,5 @@ public class PalindromeCheckerApp {
         }
 
         scanner.close();
-
     }
 }
