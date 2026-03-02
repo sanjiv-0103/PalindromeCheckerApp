@@ -8,30 +8,31 @@ public class PalindromeCheckerApp {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter a word to check if it is a palindrome: ");
+        System.out.print("Enter a word to check palindrome performance: ");
         String input = scanner.nextLine();
 
-        System.out.println("Select strategy: 1 = Stack, 2 = Deque");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        PalindromeStrategy[] strategies = {
+                new StackStrategy(),
+                new DequeStrategy(),
+                new TwoPointerStrategy()
+        };
 
-        PalindromeStrategy strategy;
+        String[] strategyNames = {
+                "StackStrategy",
+                "DequeStrategy",
+                "TwoPointerStrategy"
+        };
 
-        if (choice == 1) {
-            strategy = new StackStrategy();
-        } else if (choice == 2) {
-            strategy = new DequeStrategy();
-        } else {
-            System.out.println("Invalid choice. Defaulting to StackStrategy.");
-            strategy = new StackStrategy();
-        }
+        for (int i = 0; i < strategies.length; i++) {
 
-        boolean isPalindrome = strategy.check(input);
+            long startTime = System.nanoTime();
+            boolean result = strategies[i].check(input);
+            long endTime = System.nanoTime();
 
-        if (isPalindrome) {
-            System.out.println("The string \"" + input + "\" is a palindrome.");
-        } else {
-            System.out.println("The string \"" + input + "\" is NOT a palindrome.");
+            long duration = endTime - startTime;
+
+            System.out.println(strategyNames[i] + ": Result = " + result
+                    + ", Time = " + duration + " ns");
         }
 
         scanner.close();
@@ -43,44 +44,36 @@ interface PalindromeStrategy {
 }
 
 class StackStrategy implements PalindromeStrategy {
-
     @Override
     public boolean check(String input) {
-
         Stack<Character> stack = new Stack<>();
-
-        for (char c : input.toCharArray()) {
-            stack.push(c);
-        }
-
-        for (char c : input.toCharArray()) {
-            if (c != stack.pop()) {
-                return false;
-            }
-        }
-
+        for (char c : input.toCharArray()) stack.push(c);
+        for (char c : input.toCharArray())
+            if (c != stack.pop()) return false;
         return true;
     }
 }
 
-
 class DequeStrategy implements PalindromeStrategy {
-
     @Override
     public boolean check(String input) {
-
         Deque<Character> deque = new ArrayDeque<>();
+        for (char c : input.toCharArray()) deque.addLast(c);
+        while (deque.size() > 1)
+            if (deque.removeFirst() != deque.removeLast()) return false;
+        return true;
+    }
+}
 
-        for (char c : input.toCharArray()) {
-            deque.addLast(c);
+class TwoPointerStrategy implements PalindromeStrategy {
+    @Override
+    public boolean check(String input) {
+        int start = 0, end = input.length() - 1;
+        while (start < end) {
+            if (input.charAt(start) != input.charAt(end)) return false;
+            start++;
+            end--;
         }
-
-        while (deque.size() > 1) {
-            if (deque.removeFirst() != deque.removeLast()) {
-                return false;
-            }
-        }
-
         return true;
     }
 
